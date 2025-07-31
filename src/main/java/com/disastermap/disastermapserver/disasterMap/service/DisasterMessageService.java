@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -20,5 +21,13 @@ public class DisasterMessageService {
         disasterMessageRepository.saveAll(disasterMessage);
     }
 
+    public Boolean existsBySn(Long sn) {
+        return disasterMessageRepository.existsBySn(sn);
+    }
+
+    // 가장 최근에 저장된 메시지의 생성 일시(crtDt)를 가져오는 메서드
+    public Optional<DisasterMessage> findLatestMessage() {
+        return disasterMessageRepository.findTopByOrderByCrtDtDesc();
+    }
 
 }

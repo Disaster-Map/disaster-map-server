@@ -4,7 +4,7 @@ import com.disastermap.disastermapserver.disasterMap.domain.DisasterMessage;
 import com.disastermap.disastermapserver.disasterMap.dto.DisasterApiResponse;
 import com.disastermap.disastermapserver.disasterMap.dto.DisasterMessageDto;
 import com.disastermap.disastermapserver.disasterMap.repository.DisasterMessageRepository;
-import com.disastermap.disastermapserver.disasterMap.service.DisasterMessageService; // DisasterMessageService 주입
+import com.disastermap.disastermapserver.disasterMap.service.DisasterMessageService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -16,7 +16,7 @@ import java.util.List;
 @Component
 public class InitialDataLoader implements CommandLineRunner {
     private final RestTemplate restTemplate;
-    private final DisasterMessageRepository disasterMessageRepository; // Repository 대신 Service를 주입받는 것이 좋지만, 현재 코드에서는 Repository를 사용하므로 유지
+    private final DisasterMessageService disasterMessageService; // Repository 대신 Service를 주입받는 것이 좋지만, 현재 코드에서는 Repository를 사용하므로 유지
     // private final DisasterMessageService disasterMessageService; // 서비스 계층을 통해 저장한다면 이 주석을 해제하고, repository 대신 사용
 
     private String API_KEY = "21GC1XPN5JGQO1GT";
@@ -27,9 +27,9 @@ public class InitialDataLoader implements CommandLineRunner {
     // 저장할 메시지들을 담을 리스트
     List<DisasterMessage> messagesToSave = new ArrayList<>();
 
-    public InitialDataLoader(RestTemplate restTemplate, DisasterMessageRepository disasterMessageRepository /*, DisasterMessageService disasterMessageService*/) {
+    public InitialDataLoader(RestTemplate restTemplate, DisasterMessageService disasterMessageService /*, DisasterMessageService disasterMessageService*/) {
         this.restTemplate = restTemplate;
-        this.disasterMessageRepository = disasterMessageRepository;
+        this.disasterMessageService = disasterMessageService;
         // this.disasterMessageService = disasterMessageService;
     }
 
@@ -102,7 +102,7 @@ public class InitialDataLoader implements CommandLineRunner {
             System.out.println("총 " + messagesToSave.size() + "개의 재난 메시지를 배치로 저장합니다.");
             // 서비스 계층을 통해 saveAll 호출하는 것이 트랜잭션 관리에 더 적합합니다.
             // disasterMessageService.saveAll(messagesToSave);
-            disasterMessageRepository.saveAll(messagesToSave); // 현재 코드에서는 Repository 직접 호출
+            disasterMessageService.saveAll(messagesToSave); // 현재 코드에서는 Repository 직접 호출
             System.out.println("배치 저장 완료.");
         } else {
             System.out.println("저장할 재난 메시지가 없습니다.");
