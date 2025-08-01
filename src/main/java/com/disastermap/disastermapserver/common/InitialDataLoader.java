@@ -60,7 +60,10 @@ public class InitialDataLoader implements CommandLineRunner {
             // 2. 첫 페이지에서 가져온 데이터도 리스트에 추가합니다.
             if (initialResponse.getBody() != null) {
                 for (DisasterMessageDto message : initialResponse.getBody()) {
-                    messagesToSave.add(mapDtoToEntity(message));
+                    // DB에 해당 SN(일련번호)이 존재하는지 확인
+                    if (!disasterMessageService.existsBySn(message.getSn())) {
+                        messagesToSave.add(mapDtoToEntity(message));
+                    }
                 }
             }
 
@@ -82,7 +85,10 @@ public class InitialDataLoader implements CommandLineRunner {
                 if (apiResponse != null && apiResponse.getBody() != null) {
                     List<DisasterMessageDto> messages = apiResponse.getBody();
                     for (DisasterMessageDto message : messages) {
-                        messagesToSave.add(mapDtoToEntity(message));
+                        // DB에 해당 SN(일련번호)이 존재하는지 확인
+                        if (!disasterMessageService.existsBySn(message.getSn())) {
+                            messagesToSave.add(mapDtoToEntity(message));
+                        }
                     }
                 } else {
                     System.out.println("페이지 " + i + ": API 응답이 null이거나 body가 비어있습니다. (API 호출 중단)");

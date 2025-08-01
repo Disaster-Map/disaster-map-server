@@ -64,6 +64,7 @@ public class DisasterScheduler {
 
             // 3. 중복되지 않은 데이터만 필터링
             for (DisasterMessageDto messageDto : apiResponse.getBody()) {
+                // SN(일련번호)으로 DB에 존재하는지 확인
                 if (!disasterMessageService.existsBySn(messageDto.getSn())) {
                     newMessages.add(messageDto);
                 }
